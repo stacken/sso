@@ -1,5 +1,5 @@
 [authservers]
-130.237.234.181
+auth.stacken.kth.se
 
 [serviceproviders]
-130.237.234.181
+sp.stacken.kth.se
