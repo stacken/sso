@@ -1,0 +1,9 @@
+---
+- name: copy authsources
+  copy: 
+          src=authsources.php
+          dest={{ simplesamlphp_path }}/config/authsources.php
+- name: copy saml20-idp-remote.php
+  copy: 
+          src=saml20-idp-remote.php
+          dest={{ simplesamlphp_path }}/metadata/saml20-idp-remote.php

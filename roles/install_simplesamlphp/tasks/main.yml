@@ -1,0 +1,47 @@
+---
+- name: download simplesamlphp
+  get_url:
+          url=https://github.com/simplesamlphp/simplesamlphp/releases/download/v{{ simplesamlphp_version }}/simplesamlphp-{{ simplesamlphp_version }}.tar.gz
+          dest=/tmp/simplesamlphp.tar.gz
+          checksum=sha256:{{ simplesamlphp_checksum }}
+
+- name: make simplesamlphp directory
+  file:
+          path={{ simplesamlphp_installdir }}
+          state=directory
+
+- name: install simplesamlphp
+  unarchive: 
+          src=/tmp/simplesamlphp.tar.gz
+          dest={{ simplesamlphp_installdir }}
+          remote_src=True
+
+- name: add nginx config
+  template:
+          src=authserver_nginx.conf
+          dest=/etc/nginx/sites-enabled/{{ server_name }}.conf
+  notify: reload nginx
+
+- name: set simplesamlphp admin password
+  replace: 
+          dest={{ simplesamlphp_path }}/config/config.php
+          regexp='\'auth.adminpassword\'\\s*=>\\s*\'.*\''
+          replace='\'auth.adminpassword\' => \'{{ auth_adminpassword }}\''
+
+- name: set simplesamlphp baseurlpath
+  replace: 
+          dest={{ simplesamlphp_path }}/config/config.php
+          regexp='\'baseurlpath\'\\s*=>\\s*\'.*\''
+          replace='\'baseurlpath\' => \'{{ baseurlpath }}\''
+
+- name: set simplesamlphp secretsalt
+  replace: 
+          dest={{ simplesamlphp_path }}/config/config.php
+          regexp='\'secretsalt\'\\s*=>\\s*\'.*\''
+          replace='\'secretsalt\' => \'{{ secretsalt }}\''
+
+- name: set simplesamlphp secretsalt
+  replace: 
+          dest={{ simplesamlphp_path }}/config/config.php
+          regexp='\'technicalcontact_email\'\\s*=>\\s*\'.*\''
+          replace='\'technicalcontact_email\' => \'staff@stacken.kth.se\''
