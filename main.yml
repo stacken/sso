@@ -1,8 +1,13 @@
 ---
 - hosts: authservers
   roles:
-          - authserver
+        - authserver
 
 - hosts: serviceproviders
   roles: 
         - serviceprovider
+
+- hosts: ldapservers
+  roles: 
+        - ldapserver
+        - phpldapadmin

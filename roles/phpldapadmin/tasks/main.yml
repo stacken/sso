@@ -1,0 +1,40 @@
+---
+- name: install phpldapadmin
+  apt: name=phpldapadmin state=present
+
+- name: add nginx config
+  template:
+          src=phpldapadmin.conf
+          dest=/etc/nginx/sites-enabled/{{ server_name}}.conf
+  notify: 
+        - reload nginx
+
+- name: set host 
+  replace: 
+          dest: /etc/phpldapadmin/config.php
+          regexp: "'server','host','.*$"
+          replace: "'server','host','127.0.0.1');"
+          #replace: "'server','host','{{ server_name }}'"
+
+- name: set base dn 
+  replace: 
+          dest: /etc/phpldapadmin/config.php
+          regexp: "'server','base',.*$"
+          replace: "'server','base',array('dc=stacken,dc=kth,dc=se'));"
+
+- name: set login dn
+  replace: 
+          dest: /etc/phpldapadmin/config.php
+          regexp: "'login','bind_id','cn=admin,dc=example,dc=com'"
+          replace: "'login','bind_id','cn=admin,dc=stacken,dc=kth,dc=se'"
+
+- name: hide template warnings
+  replace: 
+          dest: /etc/phpldapadmin/config.php
+          regexp: "^.*hide_template_warning.*$"
+          replace: "$config->custom->appearance['hide_template_warning'] = true;"
+
+- name: copy account template
+  copy: 
+          src=custom_stackenaccount.xml
+          dest=/etc/phpldapadmin/templates/creation/custom_stackenaccount.xml

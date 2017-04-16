@@ -3,3 +3,6 @@ auth.stacken.kth.se
 
 [serviceproviders]
 sp.stacken.kth.se
+
+[ldapservers]
+ldap.stacken.kth.se 

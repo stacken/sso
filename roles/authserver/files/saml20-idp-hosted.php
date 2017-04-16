@@ -18,7 +18,7 @@ $metadata['__DYNAMIC:1__'] = array(
 	 * The authentication source which should be used to authenticate the
 	 * user. This must match one of the entries in config/authsources.php.
 	 */
-	'auth' => 'example-userpass',
+	'auth' => 'ldap',
 
 	'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
 	'authproc' => array(

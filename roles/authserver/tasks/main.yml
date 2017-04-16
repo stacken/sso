@@ -5,20 +5,8 @@
           regexp='^.*enable.saml20-idp.*$'
           replace='\'enable.saml20-idp\' => true,' # note comma
 
-- name: enable shib13 idp
-  replace: 
-          dest={{ simplesamlphp_path }}/config/config.php
-          regexp='^.*enable.shib13-idp.*$'
-          replace='\'enable.shib13-idp\' => true,' # note comma
-
-# begin sample authentication 
-- name: enable exampleauth
-  file: 
-          path={{ simplesamlphp_path }}/modules/exampleauth/enabled
-          state=touch
-
 - name: add authsources.php
-  copy:
+  template:
           src=authsources.php
           dest={{ simplesamlphp_path }}/config/authsources.php
 
@@ -37,5 +25,3 @@
   with_items:
           - saml20-idp-hosted.php
           - saml20-sp-remote.php
-# end sample authentication
-
