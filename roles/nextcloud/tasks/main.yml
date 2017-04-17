@@ -1,0 +1,76 @@
+---
+- name: install php modules and unzip
+  apt:
+          name={{item}} state=present
+  with_items:
+          - php7.0-gd
+          - php7.0-mbstring
+          - php7.0-zip
+          - php7.0-pgsql
+          - php7.0-bz2
+          - php7.0-intl
+          - unzip
+
+- name: copy nginx config
+  template: 
+          src=nextcloud.conf
+          dest=/etc/nginx/sites-enabled/nextcloud.conf
+  notify:
+          - reload nginx
+
+- name: download nextcloud
+  get_url: url=https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.zip
+          dest=/tmp/nextcloud.zip
+          checksum=sha256:{{ nextcloud_checksum }}
+
+- name: remove nextcloud directory
+  file: 
+          path={{nextcloud_installdir}}
+          state=absent
+
+- name: make nextcloud directory
+  file:
+          path={{ nextcloud_installdir }}
+          state=directory
+
+- name: unpack nextcloud
+  unarchive: 
+          src=/tmp/nextcloud.zip
+          dest={{ nextcloud_installdir }}
+          remote_src=True
+          owner=www-data
+
+- name: configure nextcloud
+  shell: cd "{{ nextcloud_installdir }}/nextcloud" && \
+        php occ maintenance:install \
+        --database pgsql
+        --database-name "{{ nextcloud_db_name }}" \
+        --database-user "{{ nextcloud_db_username }}" \
+        --database-pass "{{ nextcloud_db_password }}" \
+        --database-host "{{ nextcloud_db_host }}" \
+        --admin-user "{{ nextcloud_admin_user }}" \
+        --admin-pass "{{ nextcloud_admin_password }}"
+  become: yes
+  become_user: www-data
+
+- name: trust domain
+  shell: cd "{{ nextcloud_installdir }}/nextcloud" && \
+          php occ config:system:set trusted_domains 2 --value "{{ server_name }}"
+  become: yes
+  become_user: www-data
+
+- name: enable ldap
+  shell: cd "{{ nextcloud_installdir }}/nextcloud" && \
+          php occ app:enable user_ldap
+  become: yes
+  become_user: www-data
+
+- name: configure ldap
+  shell: cd "{{ nextcloud_installdir }}/nextcloud" && \
+          php occ config:app:set user_ldap "{{ item.key }}" --value "{{ item.value }}"
+  with_items: "{{ ldap_config }}"
+  become: yes
+  become_user: www-data
+
+- name: pause to set ldap password
+  pause: "please set ldap password for the nextcloud ldap user to {{ ldap_nextcloud_password }}"

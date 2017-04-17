@@ -6,6 +6,5 @@
           - ldap-utils
           - sasl2-bin
 
-
 - name: inform of dpkg-reconfigure
   pause: prompt='Please run dpkg-reconfigure slapd manually before proceeding'

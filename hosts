@@ -6,3 +6,6 @@ sp.stacken.kth.se
 
 [ldapservers]
 ldap.stacken.kth.se 
+
+[nextcloudservers]
+nextcloud.stacken.kth.se

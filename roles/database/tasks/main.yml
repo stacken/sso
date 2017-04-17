@@ -1,0 +1,41 @@
+---
+- name: install postgres
+  apt: 
+        name: "{{ item }}"
+        state: present
+  with_items:
+        - postgresql
+        - python-psycopg2
+
+- name: remove db
+  postgresql_db: 
+          name: "{{ database_name }}"
+          state: absent
+  become: yes
+  become_user: postgres
+
+- name: add db
+  postgresql_db: 
+          name: "{{ database_name }}"
+  become: yes
+  become_user: postgres
+
+- name: add db user
+  postgresql_user: 
+          db: "{{ database_name }}"
+          name: "{{ database_user }}"
+          password: "{{ database_password }}"
+          role_attr_flags: NOSUPERUSER,NOCREATEDB
+          priv: ALL
+  become: yes
+  become_user: postgres
+
+- name: remove access from other users
+  postgresql_privs: 
+          db: "{{ database_name }}"
+          role: PUBLIC
+          type: database
+          priv: ALL 
+          state: absent
+  become: yes
+  become_user: postgres

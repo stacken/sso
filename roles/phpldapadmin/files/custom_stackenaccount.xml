@@ -18,9 +18,16 @@
 		<attribute id="cn">
 			<display>Common Name</display>
 			<onchange>=autoFill(uid;%cn%)</onchange>
+			<onchange>=autoFill(displayName;%cn%)</onchange>
 			<onchange>=autoFill(homeDirectory;/afs/stacken.kth.se/home/%cn%)</onchange>
 			<onchange>=autoFill(userPassword;{SASL}%cn%@STACKEN.KTH.SE)</onchange>
 			<order>3</order>
+			<page>1</page>
+		</attribute>
+		<attribute id="displayName">
+			<display>Display name</display>
+			<icon>ldap-uid.png</icon>
+			<order>1</order>
 			<page>1</page>
 		</attribute>
 		<attribute id="givenName">

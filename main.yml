@@ -11,3 +11,8 @@
   roles: 
         - ldapserver
         - phpldapadmin
+
+- hosts: nextcloudservers
+  roles:
+        - database
+        - nextcloud
