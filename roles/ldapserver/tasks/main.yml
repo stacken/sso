@@ -5,6 +5,68 @@
           - slapd
           - ldap-utils
           - sasl2-bin
+          - python-ldap
+          - heimdal-clients
+  notify: inform of dpkg-reconfigure
 
-- name: inform of dpkg-reconfigure
-  pause: prompt='Please run dpkg-reconfigure slapd manually before proceeding'
+- name: add users and groups ous
+  ldap_entry: 
+    dn: "ou={{ item }},dc=stacken,dc=kth,dc=se"
+    objectClass: organizationalUnit
+    bind_dn: "cn=admin,dc=stacken,dc=kth,dc=se"
+    bind_pw: "{{ ldap_admin_password }}"
+  with_items: "{{ ldap_ous }}"
+
+- name: add groups
+  ldap_entry: 
+    dn: "cn={{ item.name }},ou=groups,dc=stacken,dc=kth,dc=se"
+    objectClass: 
+      - top
+      - posixGroup
+    attributes:
+      gidNumber: "{{ item.gid }}"
+    bind_dn: "cn=admin,dc=stacken,dc=kth,dc=se"
+    bind_pw: "{{ ldap_admin_password }}"
+  with_items: "{{ ldap_groups }}"
+
+- name: add sample users
+  ldap_entry: 
+    dn: "cn={{ item.username }},ou=users,dc=stacken,dc=kth,dc=se"
+    objectClass: 
+      - inetOrgPerson
+      - posixAccount
+      - top
+    bind_dn: "cn=admin,dc=stacken,dc=kth,dc=se"
+    bind_pw: "{{ ldap_admin_password }}"
+    attributes:
+      cn: "{{ item.username }}"
+      givenName: "{{ item.firstName }}"
+      sn: "{{ item.lastName }}"
+      gidNumber: "{{ item.gidNumber }}"
+      homeDirectory: "/afs/stacken.kth.se/home/{{ item.username }}"
+      #userPassword: "{SASL}{{ item.username }}@STACKEN.KTH.SE"
+      userPassword: ""
+      uid: "{{ item.username }}"
+      uidNumber: "{{ item.uidNumber }}"
+      displayName: "{{ item.username }}"
+  with_items: "{{ ldap_accounts }}"
+
+- name: add system accounts
+  ldap_entry: 
+    dn: "cn={{ item.username }},ou=system_accounts,dc=stacken,dc=kth,dc=se"
+    objectClass: 
+      - inetOrgPerson
+      - posixAccount
+      - top
+    bind_dn: "cn=admin,dc=stacken,dc=kth,dc=se"
+    bind_pw: "{{ ldap_admin_password }}"
+    attributes:
+      cn: "{{ item.username }}"
+      givenName: "{{ item.firstName }}"
+      sn: "{{ item.lastName }}"
+      gidNumber: "{{ item.gidNumber }}"
+      homeDirectory: "/nonexistent"
+      userPassword: "{{ item.password }}"
+      uid: "{{ item.username }}"
+      uidNumber: "{{ item.uidNumber }}"
+  with_items: "{{ system_accounts }}"
