@@ -6,13 +6,19 @@ $config = array(
         // any authentication source.
         'core:AdminPassword',
     ),
-    'example-ldap' => array(
+    'ldap' => array(
 	    'ldap:LDAP',
 	    'hostname' => 'ldap.stacken.kth.se',
 	    'dnpattern' => 'cn=%username%,ou=users,dc=stacken,dc=kth,dc=se',
 	    // 'search.enable' => true,
 	    //'search.username' => 'cn=auth,ou=system_accounts,dc=stacken,dc=kth,dc=se§',
 	    //'search.password' => '{{ ldap_saml_password }}',
+    ),
+
+    'kerberos' => array(
+	    'kerberos:Krb5',
+	    'realm' => 'STACKEN.KTH.SE',
+	    'stripRealm' => true
     ),
 );
 ?>

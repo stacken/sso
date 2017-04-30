@@ -25,3 +25,46 @@
   with_items:
           - saml20-idp-hosted.php
           - saml20-sp-remote.php
+
+- name: install stuff 
+  apt: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - php-pear
+    - php7.0-dev
+    - libkrb5-dev
+    - php-gmp
+    - php-sqlite3
+
+- name: install krb5 for php
+  pear: 
+    name: pecl/krb5
+    state: present
+
+- name: enable krb5
+  lineinfile: 
+    path: "/etc/php/7.0/fpm/conf.d/50-krb5.ini"
+    line: "extension=krb5.so"
+    create: yes
+  notify: restart php
+
+- name: download composer 
+  get_url: 
+    url: "https://getcomposer.org/download/1.4.1/composer.phar"
+    dest: "/usr/local/bin/composer"
+    checksum: "sha256:abd277cc3453be980bb48cbffe9d1f7422ca1ef4bc0b7d035fda87cea4d55cbc"
+    mode: 0755
+
+- name: require simplesamlphp kerberos module
+  composer: 
+    command: "require"
+    arguments: "ualberta-iapps/simplesamlphp-module-kerberos"
+    working_dir: "{{ simplesamlphp_path }}"
+    no-dev: true
+    no_dev: true
+
+- name: enable kerberos module
+  file: 
+    path: "{{ simplesamlphp_path }}/modules/kerberos/enable"
+    state: touch
