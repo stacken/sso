@@ -1,0 +1,2 @@
+- name: inform of dpkg-reconfigure
+  pause: prompt='Please run dpkg-reconfigure slapd manually before proceeding'
