@@ -1,18 +1,14 @@
 ---
-- hosts: authservers
-  roles:
-        - authserver
+#- hosts: authservers
+#  roles:
+#    - authserver
 
-- hosts: serviceproviders
-  roles: 
-        - serviceprovider
+#- hosts: ldapservers
+#  roles: 
+#    - ldapserver
+#      #- phpldapadmin
 
-- hosts: ldapservers
-  roles: 
-        - ldapserver
-        - phpldapadmin
-
-- hosts: nextcloudservers
-  roles:
-        - database
-        - nextcloud
+#- hosts: nextcloudservers
+#  roles:
+#    - database
+#    - nextcloud
