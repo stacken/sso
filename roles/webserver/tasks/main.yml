@@ -2,17 +2,23 @@
 - name: install nginx and php
   apt: name={{ item }}
   with_items:
-          - nginx
-          - php7.0-fpm
-          - php7.0-cli
-          - php7.0-xml
-          - php7.0-curl
-          - php7.0-mcrypt
-          - php7.0-ldap
+    - nginx
+    - php7.0-fpm
+    - php7.0-cli
+    - php7.0-xml
+    - php7.0-curl
+    - php7.0-mcrypt
+    - php7.0-ldap
+    - letsencrypt
   become: yes
+
+- name: write default site to redirect http to https
+  copy: 
+    src: default.conf
+    dest: /etc/nginx/sites-enabled/default
 
 - name: start nginx and php
   systemd: name={{ item }} state=started enabled=yes
   with_items:
-          - nginx
-          - php7.0-fpm
+    - nginx
+    - php7.0-fpm
