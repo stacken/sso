@@ -5,6 +5,12 @@
           regexp='^.*enable.saml20-idp.*$'
           replace='\'enable.saml20-idp\' => true,' # note comma
 
+- name: set theme
+  replace: 
+          dest={{ simplesamlphp_path }}/config/config.php
+          regexp='^.*theme.use.*$'
+          replace='\'theme.use\' => \'stacken:stacken\',' # note comma
+
 - name: add authsources.php
   template:
           src=authsources.php
