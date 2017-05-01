@@ -59,7 +59,7 @@
 - name: require simplesamlphp kerberos module
   composer: 
     command: "require"
-    arguments: "ualberta-iapps/simplesamlphp-module-kerberos"
+    arguments: "fabstr/simplesamlphp-module-kerberos"
     working_dir: "{{ simplesamlphp_path }}"
     no-dev: true
     no_dev: true
