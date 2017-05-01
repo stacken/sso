@@ -37,8 +37,6 @@ if ($this->data['errorcode'] !== null) {
 ?>
     <h2 style="break: both">Enter Kerberos credentials</h2>
 
-    <p class="logintext"><?php echo $this->t('{login:user_pass_text}'); ?></p>
-
     <form action="?" method="post" name="f">
         <table>
             <tr>
