@@ -1,4 +1,14 @@
 ---
+- name: isntall rsync
+  apt: 
+    name: rsync
+    state: present
+
+- name: copy theme files
+  synchronize: 
+    src: stacken
+    dest: "{{ simplesamlphp_path }}/modules"
+
 - name: enable saml2 idp
   replace: 
           dest={{ simplesamlphp_path }}/config/config.php
