@@ -59,10 +59,16 @@
 - name: require simplesamlphp kerberos module
   composer: 
     command: "require"
-    arguments: "fabstr/simplesamlphp-module-kerberos"
+    arguments: "ualberta-iapps/simplesamlphp-module-kerberos"
     working_dir: "{{ simplesamlphp_path }}"
     no-dev: true
     no_dev: true
+
+- name: modify regex for principals
+  lineinfile:
+    path: "{{ simplesamlphp_path }}/modules/kerberos/lib/Auth/Source/Krb5.php"
+    regexp: 'preg_match'
+    line: "preg_match('/^[A-Za-z0-9\\-\\.]+(\\/admin)?/', $string, $matches);"
 
 - name: enable kerberos module
   file: 
